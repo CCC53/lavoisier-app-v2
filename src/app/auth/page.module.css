@@ -1,0 +1,67 @@
+.loginContainer {
+    align-items: center;
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.paper {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 420px;
+    width: 520px;
+    padding: 2rem;
+}
+
+.paperLogin {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 320px;
+    width: 520px;
+    padding: 2rem;
+}
+
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 2rem;
+    gap: 1.5rem;
+}
+
+.fakeButton {
+    cursor: pointer;
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 0.5em;
+    position: relative;
+}
+
+@media screen and (max-width: 600px) {
+    .paper {
+        width: 90%;
+        min-height: 350px;
+        padding: 1.5rem;
+    }
+
+    .paperLogin {
+        width: 90%;
+        min-height: 300px;
+        padding: 1.5rem;
+    }
+
+    .loginForm {
+        margin-top: 1.5rem;
+        gap: 1.25rem;
+    }
+}
