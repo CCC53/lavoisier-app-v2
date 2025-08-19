@@ -1,6 +1,7 @@
-import { GlobalStore } from "@/app/redux/store.types";
+import { store } from "@/app/redux/store";
+import { RootState } from "@/app/redux/store.types";
+import { setToken } from "@/app/redux/auth.slice";
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { useSelector } from "react-redux";
 
 class ApiClient {
     private static instance: ApiClient;
@@ -20,7 +21,8 @@ class ApiClient {
     public setupInterceptors(): void {
         this.axiosInstance.interceptors.request.use(
             (config) => {
-                const token = useSelector((state: GlobalStore) => state.auth.token);
+                const state: RootState = store.getState();
+                const token = state.auth.token;
                 if (token) {
                     config.headers.Authorization = `Bearer ${token}`;
                 }
@@ -32,6 +34,7 @@ class ApiClient {
         this.axiosInstance.interceptors.response.use(
             (res) => res, async(error: AxiosError) => {
                 if (error.response?.status === 401 || error.response?.status === 403) {
+                    store.dispatch(setToken(null));
                     window.location.href = '/auth';
                 }
                 return Promise.reject(error);
