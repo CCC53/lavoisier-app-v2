@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { AuthDynamicFields, AuthDynamicFieldsTouched, AuthDynamicFieldsTouchedErrors, ROL_OPTIONS } from './auth.types';
 import styles from './page.module.css';
+import { AuthService } from "../api/services/auth.service";
 
 const Box = dynamic(() => import('@mui/material/Box'), { ssr: false });
 const Paper = dynamic(() => import('@mui/material/Paper'), { ssr: false });
@@ -49,7 +50,7 @@ export default function Auth() {
         if (!password) {
             return 'La contraseña es requerida';
         }
-        if (password.length < 6) {
+        if (password.length < 5) {
             return 'La contraseña debe tener al menos 6 caracteres';
         }
         return '';
@@ -109,9 +110,18 @@ export default function Auth() {
         return !Boolean(values.email && values.password && !passError && !emailError)
     }
 
-    const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleOnSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(values);
+        setLoading(true);
+        try {
+            const response = await AuthService.auth(values, doRegister);
+            console.log(response);
+            router.push('/dashboard')
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (

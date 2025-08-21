@@ -8,11 +8,18 @@ class ApiClient {
     private axiosInstance: AxiosInstance;
 
     constructor() {
-        this.axiosInstance = axios.create();
+        this.axiosInstance = axios.create({
+            baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+            timeout: 15000,
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        });
     }
 
     public static getInstance(): ApiClient {
-        if (!ApiClient) {
+        if (!ApiClient.instance) {
             ApiClient.instance = new ApiClient();
         }
         return ApiClient.instance;
