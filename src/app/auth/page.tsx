@@ -6,6 +6,7 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import { AuthDynamicFields, AuthDynamicFieldsTouched, AuthDynamicFieldsTouchedErrors, ROL_OPTIONS } from './auth.types';
 import styles from './page.module.css';
 import { AuthService } from "../api/services/auth.service";
+import { useRedirect } from "../hooks/useRedirect";
 
 const Box = dynamic(() => import('@mui/material/Box'), { ssr: false });
 const Paper = dynamic(() => import('@mui/material/Paper'), { ssr: false });
@@ -124,6 +125,8 @@ export default function Auth() {
         }
     }
 
+    useRedirect();
+
     return (
         <Box className={styles.loginContainer}>
             <Paper elevation={3} className={doRegister ? styles.paper : styles.paperLogin}>
@@ -155,7 +158,7 @@ export default function Auth() {
                     <TextField required value={values.password} label="Contraseña" variant="standard" placeholder="Ingrese su contraseña" fullWidth type="password"
                         sx={{ mb: 1.5 }}  onChange={handleOnChange('password')} onBlur={handleOnBlur('password')} error={touched.password && Boolean(errors.password)}
                             helperText={touched.password && errors.password}/>
-                    <Button variant="contained" type="submit" fullWidth sx={{ mt: 3, mb: 3 }} disabled={isValid()}>
+                    <Button variant="contained" type="submit" fullWidth sx={{ mt: 3, mb: 3 }} disabled={isValid()} loading={loading} loadingPosition="end">
                         { doRegister ? 'Registrar' : 'Iniciar sesión' }
                     </Button>
                     <Typography onClick={toggleRegister} sx={{ cursor: 'pointer' }} variant="button" color="primary">
