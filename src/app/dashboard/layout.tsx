@@ -1,8 +1,9 @@
 "use client";
 import dynamic from "next/dynamic";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRedirect } from "../hooks/useRedirect";
 import { useRouter } from "next/navigation";
+import { AuthService } from '../api/services/auth.service';
 
 const Box = dynamic(() => import('@mui/material/Box'), { ssr: false });
 const AppBar = dynamic(() => import('@mui/material/AppBar'), { ssr: false });
@@ -28,13 +29,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     const router = useRouter();
     const [open, setOpen] = useState(false);
-
-    const routes = [
+    const [routes, setRoutes] = useState([
         { path: '/dashboard/pacientes', label: 'Pacientes', icon: <PersonIcon/> },
         { path: '/dashboard/citas', label: 'Citas', icon: <CalendarTodayIcon/> },
-        { path: '/dashboard/pagos', label: 'Pagos', icon: <PaymentsIcon/> },
-        { path: '/dashboard/historial-clinico', label: 'Historial Clinico', icon: <PendingActionsIcon/> },
-    ];
+    ]);
+
+    useEffect(() => {
+        const payload = AuthService.getPayloadFromToken();
+        if (payload.role == "N") {
+            setRoutes([...routes, { path: '/dashboard/historial-clinico', label: 'Historial Clinico', icon: <PendingActionsIcon/> }]);
+        } else {
+            setRoutes([...routes, { path: '/dashboard/pagos', label: 'Pagos', icon: <PaymentsIcon/> }]);
+        }
+    }, [])
+    
 
     const handleNavigation = (path: string) => {
         router.push(path);
@@ -100,7 +108,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </Box>
             </Drawer>
 
-            <Box sx={{ flexGrow: 1, padding: 10, marginLeft: 0, width: '100%', marginBottom: '150px'}}>
+            <Box sx={{ flexGrow: 1, padding: 10, marginLeft: 0, width: '100%', marginBottom: '150px', marginTop: '20px'}}>
                 { children }
 
                 {/* Footer */}

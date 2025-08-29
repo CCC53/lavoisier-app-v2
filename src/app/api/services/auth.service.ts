@@ -1,5 +1,6 @@
+import { jwtDecode } from "jwt-decode";
 import { AuthDynamicFields } from "@/app/auth/auth.types";
-import { AuthSuccessResponse, RegisterSuccessResponse } from "../api.types";
+import { AuthSuccessResponse, DecodedPayload, RegisterSuccessResponse } from "../api.types";
 import { apiClient } from "../utils/apiClient";
 
 export class AuthService {
@@ -14,5 +15,14 @@ export class AuthService {
             console.log(error);
             throw error;
         }
+    }
+
+    public static getPayloadFromToken() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            return {} as DecodedPayload;
+        }
+        const decoded = jwtDecode(token) as DecodedPayload;
+        return decoded;
     }
 }

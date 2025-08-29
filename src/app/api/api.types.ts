@@ -15,3 +15,11 @@ export interface RegisterSuccessResponse {
     personal: Personal;
     token: string;
 }
+
+export interface DecodedPayload {
+    sub: string;
+    role: "R" | "N";
+    id: string;
+    iat: number;
+    exp: number;
+}

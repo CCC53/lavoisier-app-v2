@@ -117,7 +117,7 @@ export default function Auth() {
         try {
             const response = await AuthService.auth(values, doRegister);
             console.log(response);
-            router.push('/dashboard')
+            router.push('/dashboard/pacientes');
         } catch (error) {
             console.log(error);
         } finally {

@@ -25,7 +25,7 @@ export const useRedirect = () => {
             router.replace('/auth');
         }
         if (token) {
-            !isJWTExpired(token) && path === '/auth' && router.replace('/dashboard');
+            !isJWTExpired(token) && path === '/auth' && router.replace('/dashboard/pacientes');
         }
     }, [router]);
 }
