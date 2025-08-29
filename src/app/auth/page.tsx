@@ -4,11 +4,10 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { SelectChangeEvent } from "@mui/material/Select";
-import { AuthDynamicFields, AuthDynamicFieldsTouched, AuthDynamicFieldsTouchedErrors, ROL_OPTIONS } from './auth.types';
-import styles from './page.module.css';
+import { ROL_OPTIONS } from './auth.types';
 import { AuthService } from "../api/services/auth.service";
 import { useRedirect } from "../hooks/useRedirect";
+import styles from './page.module.css';
 
 const Box = dynamic(() => import('@mui/material/Box'), { ssr: false });
 const Paper = dynamic(() => import('@mui/material/Paper'), { ssr: false });
@@ -19,16 +18,15 @@ const FormControl = dynamic(() => import('@mui/material/FormControl'), { ssr: fa
 const InputLabel = dynamic(() => import('@mui/material/InputLabel'), { ssr: false });
 const Button = dynamic(() => import('@mui/material/Button'), { ssr: false });
 const Typography = dynamic(() => import('@mui/material/Typography'));
-const CircularProgress = dynamic(() => import('@mui/material/CircularProgress'), { ssr: false });
 
 const loginSchema = yup.object({
     email: yup.string().email('Ingrese un email válido').required('El email es requerido'),
-    password: yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres').required('La contraseña es requerida')
+    password: yup.string().min(5, 'La contraseña debe tener al menos 5 caracteres').required('La contraseña es requerida')
 });
 
 const registerSchema = yup.object({
     email: yup.string().email('Ingrese un email válido').required('El email es requerido'),
-    password: yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres').required('La contraseña es requerida'),
+    password: yup.string().min(5, 'La contraseña debe tener al menos 5 caracteres').required('La contraseña es requerida'),
     nombre: yup.string().min(2, 'El nombre debe tener al menos 2 caracteres').required('El nombre es requerido'),
     telefono: yup.string().min(10, 'El teléfono debe tener al menos 8 caracteres').required('El teléfono es requerido'),
     rol: yup.string().required('El rol es requerido')
@@ -47,8 +45,6 @@ export default function Auth() {
             rol: ''
         },
         validationSchema: doRegister ? registerSchema : loginSchema,
-        validateOnChange: false,
-        validateOnBlur: true,
         onSubmit: async (values, { setSubmitting, setErrors }) => {
             try {
                 const response = await AuthService.auth(values, doRegister);
@@ -121,8 +117,9 @@ export default function Auth() {
                     <TextField name="password" required sx={{ mb: 1.5 }} value={formik.values.password} onChange={formik.handleChange} onBlur={formik.handleBlur}
                         label="Contraseña" variant="standard" placeholder="Ingrese su contraseña" fullWidth type="password"
                         error={formik.touched.password && Boolean(formik.errors.password)} helperText={formik.touched.password && formik.errors.password} />
-                    <Button variant="contained" type="submit" fullWidth sx={{ mt: 3, mb: 3 }} disabled={isFormValid() || formik.isSubmitting}>
-                        { formik.isSubmitting ? (<CircularProgress size={24} color="inherit" />) : (doRegister ? 'Registrar' : 'Iniciar sesión') }
+                    <Button variant="contained" type="submit" fullWidth sx={{ mt: 3, mb: 3 }} disabled={isFormValid() || formik.isSubmitting}
+                        loading={formik.isSubmitting} loadingPosition="end">
+                        { doRegister ? 'Registrar' : 'Iniciar sesión' }
                     </Button>
                     <Typography onClick={toggleRegister} sx={{ cursor: 'pointer' }} variant="button" color="primary">
                         { doRegister ? '¿Ya está registrado? Inicie sesión' : 'Registrar nuevo miembro' }

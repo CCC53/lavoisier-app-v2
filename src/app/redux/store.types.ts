@@ -1,10 +1,21 @@
+import { Paciente } from '../dashboard/pacientes/paciente.types';
 
-export interface AuthState {
-    token: string | null;
+export interface PacienteStore {
+    pacientes: Paciente[];
+    totalCount: number;
+    currentPage: number;
+    pageSize: number;
+    error: string | null;
+    loading: boolean;
+}
+
+export interface Pagination {
+    pageSize: number;
+    page: number;
 }
 
 export interface GlobalStore {
-    auth: AuthState;
+    pacientes: PacienteStore;
 }
 
 // Re-export types from store for convenience
