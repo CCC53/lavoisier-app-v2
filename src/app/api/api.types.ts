@@ -23,3 +23,7 @@ export interface DecodedPayload {
     iat: number;
     exp: number;
 }
+
+export interface RemoveItemResponse {
+    removed: boolean;
+}

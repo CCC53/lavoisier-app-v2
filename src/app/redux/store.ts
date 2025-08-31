@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { pacienteSlice } from "./pacientes.slice";
+import { componentsSlice } from "./components.slice";
 
 export const store = configureStore({
     reducer: {
-        pacientes: pacienteSlice.reducer
+        pacientes: pacienteSlice.reducer,
+        components: componentsSlice.reducer
     }
 });
 

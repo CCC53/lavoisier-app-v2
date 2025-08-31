@@ -1,24 +1,56 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { GlobalStore, PacienteStore } from "./store.types";
 import { PacienteService } from "../api/services/paciente.service";
+import { setLoading, setModalOpen, setSelectedRow, setTotalCount } from "./components.slice";
 
 const initialState: PacienteStore = {
     pacientes: [],
-    totalCount: 0,
-    currentPage: 0,
-    pageSize: 10,
-    error: null,
-    loading: false
+    selectedPaciente: null,
+    error: null
 }
  
-export const list = createAsyncThunk('pacientes/list', async(_, { getState, rejectWithValue }) => {
+export const listPacientes = createAsyncThunk('pacientes/list', async(_, { getState, rejectWithValue, dispatch }) => {
     try {
-        const { pacientes } = getState() as GlobalStore;
-        const { pageSize, currentPage  } = pacientes;
+        dispatch(setLoading(true));
+        const { components } = getState() as GlobalStore;
+        const { pageSize, currentPage  } = components;
         const response = await PacienteService.listPacientes(currentPage, pageSize);
+        dispatch(setTotalCount(response.totalCount));
         return response;
     } catch (error: any) {
         return rejectWithValue(error.message || 'Algo ha salido mal');
+    } finally{
+        dispatch(setLoading(false));
+    }
+});
+
+export const findPaciente = createAsyncThunk('pacientes/find', async(id: string, { getState, rejectWithValue, dispatch }) => {
+    try {
+        dispatch(setLoading(true));
+        const response = await PacienteService.findPacienteById(id);
+        return response;
+    } catch (error: any) {
+        return rejectWithValue(error.message || 'Algo ha salido mal');
+    } finally {
+        dispatch(setLoading(false));
+    }
+});
+
+export const removePaciente = createAsyncThunk('pacientes/remove', async(_, { getState, rejectWithValue, dispatch }) => {
+    try {
+        dispatch(setLoading(true));
+        const { components } = getState() as GlobalStore;
+        const { selectedRow } = components;
+        if (selectedRow) {
+            const response =  await PacienteService.removePaciente(selectedRow.id);
+            response.removed && dispatch(listPacientes());
+        }
+    } catch (error: any) {
+        return rejectWithValue(error.message || 'Algo ha salido mal');
+    } finally {
+        dispatch(setLoading(false));
+        dispatch(setSelectedRow(null));
+        dispatch(setModalOpen(false));
     }
 });
 
@@ -26,30 +58,23 @@ export const pacienteSlice  = createSlice({
     name: 'pacientes',
     initialState,
     reducers: {
-        setPage: (state, action) => {
-            state.currentPage = action.payload;
-        },
-        setPageSize: (state, action) => {
-            state.pageSize = action.payload;
-        }
     },
     extraReducers: (builder) => {
-        builder.addCase(list.pending, (state) => {
-            state.loading = true;
-            state.error = null;
-        })
-        .addCase(list.fulfilled, (state, action) => {
-            state.loading = false;
+        builder.addCase(listPacientes.fulfilled, (state, action) => {
+            setLoading(false);
             if (action.payload) {
                 state.pacientes = action.payload.data;
-                state.totalCount = action.payload.totalCount
+                setTotalCount(action.payload.totalCount);
             }
         })
-        .addCase(list.rejected, (state, action) => {
-            state.loading = false;
+        // 
+        .addCase(findPaciente.fulfilled, (state, action) => {
+            setLoading(false);
+            if (action.payload) {
+                state.selectedPaciente = action.payload.data;
+            }
         })
     }
 });
 
-export const { setPage, setPageSize } = pacienteSlice.actions;
 export default pacienteSlice.reducer;

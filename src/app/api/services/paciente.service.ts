@@ -1,5 +1,6 @@
-import { ListPacientesResponse } from "@/app/dashboard/pacientes/paciente.types";
+import { FindOnePacienteResponse, ListPacientesResponse } from "@/app/dashboard/pacientes/paciente.types";
 import { apiClient } from "../utils/apiClient";
+import { RemoveItemResponse } from "../api.types";
 
 export class PacienteService {
     public static async listPacientes(page: number, pageSize: number): Promise<ListPacientesResponse> {
@@ -8,6 +9,26 @@ export class PacienteService {
             return response;
         } catch (error) {
             console.log('error on listPayments: ', error);
+            throw error;
+        }
+    }
+
+    public static async findPacienteById(id: string): Promise<FindOnePacienteResponse> {
+        try {
+            const response = await apiClient.get<FindOnePacienteResponse>(`/paciente/${id}`);
+            return response;
+        } catch (error) {
+            console.log('error on findPacienteById: ', error);
+            throw error;
+        }
+    }
+
+    public static async removePaciente(id: string): Promise<RemoveItemResponse> {
+        try {
+            const response = await apiClient.delete<RemoveItemResponse>(`/paciente/${id}`);
+            return response;
+        } catch (error) {
+            console.log('error on removePaciente: ', error);
             throw error;
         }
     }

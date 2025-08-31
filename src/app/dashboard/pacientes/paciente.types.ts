@@ -3,7 +3,7 @@ export interface PacienteForm {
     nombre: string;
     telefono: string;
     email: string;
-    fechaNacimiento: Date | null;
+    nacimiento: Date | null;
     sexo: string;
 }
 
@@ -12,11 +12,15 @@ export interface Paciente {
     nombre: string;
     telefono: string;
     email: string;
-    fechaNacimiento: Date | null;
+    nacimiento: Date | string;
     sexo: string;
 }
 
 export interface ListPacientesResponse {
     data: Paciente[];
     totalCount: number;
+}
+
+export interface FindOnePacienteResponse {
+    data: Paciente;
 }

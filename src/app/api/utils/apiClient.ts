@@ -13,6 +13,7 @@ class ApiClient {
                 'Accept': 'application/json',
             }
         });
+        this.setupInterceptors();
     }
 
     public static getInstance(): ApiClient {
