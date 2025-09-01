@@ -1,13 +1,14 @@
 "use client";
 import dynamic from "next/dynamic";
 import { use, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { DatePicker } from "@mui/x-date-pickers";
 import { PacienteForm } from "../paciente.types";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
-import { findPaciente } from "@/app/redux/pacientes.slice";
+import { createPaciente, findPaciente, updatePaciente } from "@/app/redux/pacientes.slice";
 
 const Typography = dynamic(() => import('@mui/material/Typography'));
 const Box = dynamic(() => import('@mui/material/Box'), { ssr: false });
@@ -31,6 +32,7 @@ const validationSchema = yup.object({
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
 
+    const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
     const { selectedPaciente } = useSelector((state: RootState) => state.pacientes);
     const { loading } = useSelector((state: RootState) => state.components);
@@ -44,12 +46,39 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             sexo: ''
         },
         validationSchema,
-        onSubmit: (values) => {
-            console.log(values)
+        onSubmit: (values, { setSubmitting }) => {
+            if (!selectedPaciente && id === "nuevo") {
+                dispatch(createPaciente(values));
+            } else {
+                dispatch(updatePaciente(values));
+                setSubmitting(false);
+            }
         }
     });
 
-    const isFormValid = () => !formik.isValid || !formik.dirty;
+    const isFormValid = () => {
+        if (!formik.isValid || !formik.dirty) {
+            return true;
+        }
+        if (id !== "nuevo" && selectedPaciente) {
+            const formValues = formik.values;
+            const pacienteValues = {
+                nombre: selectedPaciente.nombre,
+                telefono: selectedPaciente.telefono,
+                email: selectedPaciente.email,
+                nacimiento: new Date(selectedPaciente.nacimiento),
+                sexo: selectedPaciente.sexo
+            };
+            return (
+                formValues.nombre === pacienteValues.nombre &&
+                formValues.telefono === pacienteValues.telefono &&
+                formValues.email === pacienteValues.email &&
+                formValues.sexo === pacienteValues.sexo &&
+                formValues.nacimiento?.getTime() === pacienteValues.nacimiento.getTime()
+            );
+        }
+        return false;
+    };
 
     useEffect(() => {
         if (id !== "nuevo") {
@@ -70,6 +99,13 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
             }
         }
     }, [selectedPaciente, id]);
+
+    useEffect(() => {
+        if (selectedPaciente && id === "nuevo") {
+            router.replace(`/dashboard/pacientes/${selectedPaciente.id}`);
+        }
+    }, [selectedPaciente, id, router, dispatch])
+    
     
     return (
         <Box>

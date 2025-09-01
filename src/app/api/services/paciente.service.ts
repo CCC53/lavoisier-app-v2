@@ -1,4 +1,4 @@
-import { FindOnePacienteResponse, ListPacientesResponse } from "@/app/dashboard/pacientes/paciente.types";
+import { FindOnePacienteResponse, ListPacientesResponse, PacienteForm } from "@/app/dashboard/pacientes/paciente.types";
 import { apiClient } from "../utils/apiClient";
 import { RemoveItemResponse } from "../api.types";
 
@@ -19,6 +19,26 @@ export class PacienteService {
             return response;
         } catch (error) {
             console.log('error on findPacienteById: ', error);
+            throw error;
+        }
+    }
+
+    public static async createPaciente(data: PacienteForm): Promise<FindOnePacienteResponse> {
+        try {
+            const response = await apiClient.post<FindOnePacienteResponse>(`/paciente`, data);
+            return response;
+        } catch (error) {
+            console.log('error on createPaciente: ', error);
+            throw error;
+        }
+    }
+
+    public static async updatePaciente(id: string, data: PacienteForm): Promise<FindOnePacienteResponse> {
+        try {
+            const response = await apiClient.put<FindOnePacienteResponse>(`/paciente/${id}`, data);
+            return response;
+        } catch (error) {
+            console.log('error on updatePaciente: ', error);
             throw error;
         }
     }

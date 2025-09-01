@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { Column } from "@/app/components/components.types";
 import { AppDispatch, RootState } from "@/app/redux/store";
-import { listPacientes, removePaciente } from "@/app/redux/pacientes.slice";
+import { listPacientes, removePaciente, setSelectedPaciente } from "@/app/redux/pacientes.slice";
 import { setPageSize, setPage } from "@/app/redux/components.slice";
 
 const Typography = dynamic(() => import('@mui/material/Typography'));
@@ -33,6 +33,7 @@ export default function Page() {
 
     useEffect(() => {
         dispatch(listPacientes());
+        dispatch(setSelectedPaciente(null));
     }, []);
 
     const handleOnPageChange = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
