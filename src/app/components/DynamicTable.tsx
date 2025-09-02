@@ -56,7 +56,8 @@ export default function DynamicTable({ data, columns, page, rowsPerPage, totalIt
                                                             <DeleteIcon/>
                                                         </IconButton>
                                                     </Box>
-                                                ) : col.field === 'sexo' ? ( <Chip color="secondary" label={row[col.field]}/>  ) : row[col.field]
+                                                ) : col.field === 'sexo' ? ( <Chip color="secondary" label={row[col.field]}/>  ) : col.field === 'paciente' ? row[col.field].nombre
+                                                : row[col.field]
                                             }
                                         </TableCell>))
                                     }

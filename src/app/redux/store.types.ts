@@ -1,3 +1,5 @@
+import { SelectOption } from '../api/api.types';
+import { Cita } from '../dashboard/citas/cita.types';
 import { Paciente } from '../dashboard/pacientes/paciente.types';
 
 export interface PacienteStore {
@@ -15,15 +17,17 @@ export interface ComponentStore {
     selectedRow: Record<string, any> | null;
 }
 
-export interface Pagination {
-    pageSize: number;
-    page: number;
+export interface CitaStore {
+    citas: Cita[];
+    selectedCita: Cita | null;
+    pacientesInput: SelectOption[];
 }
+
 
 export interface GlobalStore {
     pacientes: PacienteStore;
-    components: ComponentStore
+    components: ComponentStore;
+    citas: CitaStore;
 }
 
-// Re-export types from store for convenience
 export type { RootState, AppDispatch } from './store';

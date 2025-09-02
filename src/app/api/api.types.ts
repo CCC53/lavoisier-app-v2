@@ -27,3 +27,8 @@ export interface DecodedPayload {
 export interface RemoveItemResponse {
     removed: boolean;
 }
+
+export interface SelectOption {
+    value: string;
+    label: string;
+}
