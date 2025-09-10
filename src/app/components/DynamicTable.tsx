@@ -20,8 +20,9 @@ const Chip = dynamic(() => import('@mui/material/Chip'), { ssr: false });
 
 const DeleteIcon = dynamic(() => import('@mui/icons-material/Delete'), { ssr: false });
 const ModeEditIcon = dynamic(() => import('@mui/icons-material/ModeEdit'), { ssr: false });
+const VisibilityIcon = dynamic(() => import('@mui/icons-material/Visibility'), { ssr: false });
 
-export default function DynamicTable({ data, columns, page, rowsPerPage, totalItems, onPageChange, onRowsPerPageChange, onDetails, onDelete }: DyamicTableProps) {
+export default function DynamicTable({ data, columns, page, rowsPerPage, totalItems, onPageChange, onRowsPerPageChange, onDetails, onDelete, allowDelete }: DyamicTableProps) {
 
     const dispatch = useDispatch<AppDispatch>();
 
@@ -50,14 +51,18 @@ export default function DynamicTable({ data, columns, page, rowsPerPage, totalIt
                                             { col.field === 'tools' ? (
                                                     <Box>
                                                         <IconButton color="primary" onClick={() => onDetails(row)}>
-                                                            <ModeEditIcon/>
+                                                            { allowDelete ? <ModeEditIcon/> :  <VisibilityIcon/> }
                                                         </IconButton>
-                                                        <IconButton color="error" onClick={() => openModal(row)}>
-                                                            <DeleteIcon/>
-                                                        </IconButton>
+                                                        {
+                                                            allowDelete && (
+                                                                <IconButton color="error" onClick={() => openModal(row)}>
+                                                                    <DeleteIcon/>
+                                                                </IconButton>
+                                                            )
+                                                        }
                                                     </Box>
                                                 ) : col.field === 'sexo' ? ( <Chip color="secondary" label={row[col.field]}/>  ) : col.field === 'paciente' ? row[col.field].nombre
-                                                : row[col.field]
+                                                : col.field === 'cita' ? row[col.field].fecha : col.field === 'pacienteCita' ? row['cita'].paciente.nombre : row[col.field]
                                             }
                                         </TableCell>))
                                     }

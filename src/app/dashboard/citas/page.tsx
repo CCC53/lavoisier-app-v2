@@ -58,7 +58,7 @@ export default function Page() {
             <Button onClick={goToNew} sx={{ marginTop: 3, marginBottom: 3 }} variant="contained">Agregar</Button>
             {
                 loading ? <LoaderApp/> : citas.length === 0 ? <DataInfo message="No hay citas registradas"/>
-                    : <DynamicTable columns={columns} data={citas} page={currentPage} rowsPerPage={pageSize} onDetails={handleOnDetail}
+                    : <DynamicTable columns={columns} data={citas} page={currentPage} rowsPerPage={pageSize} onDetails={handleOnDetail} allowDelete={true}
                         totalItems={totalCount} onPageChange={handleOnPageChange} onRowsPerPageChange={handleOnRowsPerPageChange} onDelete={handleDelete} />
             }
         </Box>

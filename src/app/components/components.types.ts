@@ -15,6 +15,7 @@ export interface DyamicTableProps {
     onDetails: (item: Record<string, any>) => void;
     onDelete: () => void;
     data: Record<string, any>[];
+    allowDelete: boolean;
 }
 
 export interface DeleteModalProps {

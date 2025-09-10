@@ -61,7 +61,7 @@ export default function Page() {
             <Box>
                 {
                     loading ? <LoaderApp/> : pacientes.length === 0 ? <DataInfo message="No hay pacientes registrados"/>
-                        : <DynamicTable columns={columns} data={pacientes} page={currentPage} rowsPerPage={pageSize} onDetails={handleOnDetail}
+                        : <DynamicTable columns={columns} data={pacientes} page={currentPage} rowsPerPage={pageSize} onDetails={handleOnDetail} allowDelete={true}
                             totalItems={totalCount} onPageChange={handleOnPageChange} onRowsPerPageChange={handleOnRowsPerPageChange} onDelete={handleDelete} />
                 }
             </Box>
